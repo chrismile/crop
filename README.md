@@ -1,10 +1,15 @@
 # crop
-Automated image cropping tool written in Python.
+
+Automated image cropping tool written in Python3.
+
+Prerequisite packages: [Pillow](https://pillow.readthedocs.io/en/latest/installation.html)
+
 
 ## Functionality
 
 This program detects the border of the passed input image and crops it to remove the border.
 For now, this program can only handle single color borders.
+
 
 ## Usage
 
