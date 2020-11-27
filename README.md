@@ -11,8 +11,10 @@ For now, this program can only handle single color borders.
 How to call:
 
 <code>
-crop.py -i INPUT_FILENAME -o OUTPUT_FILENAME [-b BORDER_SIZE] [-v True|False] [-s True|False]
+crop.py -i INPUT_FILENAME -o OUTPUT_FILENAME [-b BORDER_SIZE] [-v VERBOSITY/True|False] [-s SHOW_IMAGE/True|False]
 </code>
+
+<br>
 
 Example:
 

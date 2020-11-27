@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-BSD 2-Clause License
-
+# BSD 2-Clause License
+# 
 # Copyright (c) 2020, Christoph Neuhauser
 # All rights reserved.
 # 
