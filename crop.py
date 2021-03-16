@@ -62,7 +62,7 @@ def guess_background_color(args_dict, rgba_image):
 	pct_occurences = float(num_occurences) / float(max_occurences)
 	
 	# One color prevailing?
-	is_confident = (pct_occurences > 0.5)
+	is_confident = (pct_occurences > 0.3)
 	
 	return bg_color, is_confident
 
