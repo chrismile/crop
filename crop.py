@@ -2,7 +2,7 @@
 
 # BSD 2-Clause License
 # 
-# Copyright (c) 2020, Christoph Neuhauser
+# Copyright (c) 2020-2022, Christoph Neuhauser
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,8 @@ def get_crop_box(args_dict, rgba_image, bg_color):
 	stop = False
 	for x in range(width):
 		for y in range(height):
-			if (rgba_image.getpixel((x, y)) != bg_color):
+			c = rgba_image.getpixel((x, y))
+			if c != bg_color and (c[3] != 0 or bg_color[3] != 0):
 				stop = True
 				break
 		if stop:
@@ -85,7 +86,8 @@ def get_crop_box(args_dict, rgba_image, bg_color):
 	stop = False
 	for y in range(height):
 		for x in range(width):
-			if (rgba_image.getpixel((x, y)) != bg_color):
+			c = rgba_image.getpixel((x, y))
+			if c != bg_color and (c[3] != 0 or bg_color[3] != 0):
 				stop = True
 				break
 		if stop:
@@ -95,7 +97,8 @@ def get_crop_box(args_dict, rgba_image, bg_color):
 	stop = False
 	for x in reversed(range(width)):
 		for y in range(height):
-			if (rgba_image.getpixel((x, y)) != bg_color):
+			c = rgba_image.getpixel((x, y))
+			if c != bg_color and (c[3] != 0 or bg_color[3] != 0):
 				stop = True
 				break
 		if stop:
@@ -105,7 +108,8 @@ def get_crop_box(args_dict, rgba_image, bg_color):
 	stop = False
 	for y in reversed(range(height)):
 		for x in range(width):
-			if (rgba_image.getpixel((x, y)) != bg_color):
+			c = rgba_image.getpixel((x, y))
+			if c != bg_color and (c[3] != 0 or bg_color[3] != 0):
 				stop = True
 				break
 		if stop:
