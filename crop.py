@@ -32,6 +32,7 @@
 # E.g.: crop.py -i input.png -o output.png -b 2
 
 import sys
+import math
 from PIL import Image
 
 def load_image(input_filename):
@@ -125,6 +126,78 @@ def get_crop_box(args_dict, rgba_image, bg_color):
 	)
 	return crop_box
 
+
+def color_similar(c0, c1, thresh):
+	#c != bg_color and (c[3] != 0 or bg_color[3] != 0)
+	#if c0 != c1 and (c0[3] != 0 or c1[3] != 0):
+	#	return False
+	diff_vec = [c0[i] - c1[i] for i in range(3)]
+	diff_metric = math.sqrt(diff_vec[0] * diff_vec[0] + diff_vec[1] * diff_vec[1] + diff_vec[2] * diff_vec[2])
+	if diff_metric > thresh and (c0[3] != 0 or c1[3] != 0):
+		return False
+	return True
+
+
+def get_crop_box_similar(args_dict, rgba_image, bg_color, thresh):
+	(width, height) = rgba_image.size
+	crop_box_list = [0, 0, width, height]
+
+	# Remove horizontal and vertical scanlines only containing background color.
+	# Left
+	stop = False
+	for x in range(width):
+		for y in range(height):
+			c = rgba_image.getpixel((x, y))
+			if not color_similar(c, bg_color, thresh):
+				stop = True
+				break
+		if stop:
+			break
+		crop_box_list[0] = x + 1
+	# Top
+	stop = False
+	for y in range(height):
+		for x in range(width):
+			c = rgba_image.getpixel((x, y))
+			if not color_similar(c, bg_color, thresh):
+				stop = True
+				break
+		if stop:
+			break
+		crop_box_list[1] = y + 1
+	# Right
+	stop = False
+	for x in reversed(range(width)):
+		for y in range(height):
+			c = rgba_image.getpixel((x, y))
+			if not color_similar(c, bg_color, thresh):
+				stop = True
+				break
+		if stop:
+			break
+		crop_box_list[2] = x
+	# Bottom
+	stop = False
+	for y in reversed(range(height)):
+		for x in range(width):
+			c = rgba_image.getpixel((x, y))
+			if not color_similar(c, bg_color, thresh):
+				stop = True
+				break
+		if stop:
+			break
+		crop_box_list[3] = y
+
+	border_size = args_dict['b']
+	crop_box = (
+		max(crop_box_list[0] - border_size, 0),
+		max(crop_box_list[1] - border_size, 0),
+		min(crop_box_list[2] + border_size, width),
+		min(crop_box_list[3] + border_size, height)
+	)
+	return crop_box
+
+
 def crop_background(args_dict, image_in, crop_box):
 	image_out = image_in.crop(crop_box)
 	return image_out
@@ -142,6 +215,7 @@ def main():
 		'i': None, # Input file name
 		'o': None, # Output file name
 		'b': 0, # Border size (in pixels)
+		't': 0, # Threshold for removing background color
 		'v': False, # Verbose mode (more output)
 		's': False # Show cropped image?
 	}
@@ -180,7 +254,10 @@ def main():
 	if not is_confident:
 		print('Error: The program couldn\'t reliably detect the background color.', file=sys.stderr)
 		return
-	crop_box = get_crop_box(args_dict, rgba_image, bg_color)
+	if args_dict['t'] > 0:
+		crop_box = get_crop_box_similar(args_dict, rgba_image, bg_color, args_dict['t'])
+	else:
+		crop_box = get_crop_box(args_dict, rgba_image, bg_color)
 	if crop_box[0] >= crop_box[2] or crop_box[1] >= crop_box[3]:
 		print('Error: Invalid crop box dimensions.', file=sys.stderr)
 		return
