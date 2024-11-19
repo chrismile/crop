@@ -262,6 +262,8 @@ def main():
 		print('Error: Invalid crop box dimensions.', file=sys.stderr)
 		return
 	image_out = crop_background(args_dict, image_in, crop_box)
+	if args_dict['v']:
+		print(crop_box)
 	if args_dict['s']:
 		image_out.show()
 	save_image(args_dict['o'], image_out)
