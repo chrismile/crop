@@ -258,6 +258,9 @@ def main():
 		crop_box = get_crop_box_similar(args_dict, rgba_image, bg_color, args_dict['t'])
 	else:
 		crop_box = get_crop_box(args_dict, rgba_image, bg_color)
+	if args_dict['v']:
+		print(f'Crop box (left upper right lower): {crop_box[0]} {crop_box[1]} {crop_box[2]} {crop_box[3]}')
+		print(f'Crop box (width x height + left + upper): {crop_box[2] - crop_box[0]}x{crop_box[3] - crop_box[1]}+{crop_box[0]}+{crop_box[1]}')
 	if crop_box[0] >= crop_box[2] or crop_box[1] >= crop_box[3]:
 		print('Error: Invalid crop box dimensions.', file=sys.stderr)
 		return
